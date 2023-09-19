@@ -20,6 +20,9 @@ Baixe o docker-compose.yml deste repo e rode o seguinte comando:
 docker compose up
 ```
 
+O flutter app está localizado em [localhost:8886](localhost:8886)
+O web app está localizado em [localhost:8887](localhost:8887)
+
 ## Observações
 
 O app em flutter foi otimizado para web, apesar do foco da unavanti ser em mobile.
