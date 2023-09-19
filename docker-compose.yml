@@ -1,0 +1,87 @@
+services:
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - 8890:5432
+
+  flutterapp:
+    image: gabrielhk97/unavanti-flutterapp
+    command: ["nginx", "-g", "daemon off;"]
+    depends_on:
+      - database
+    ports:
+      - 8886:80
+    environment:
+      API_URL: backend:8889
+  
+  webapp:
+    image: gabrielhk97/unavanti-webapp
+    command: npx serve build
+    depends_on:
+      - database
+    ports:
+      - 8887:3000
+    environment:
+      API_URL: backend:8889
+
+  alpha:
+    image: gabrielhk97/unavanti-alpha
+    command: node dist/main
+    ports:
+      - 8888:3001
+    depends_on:
+      - database
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 8890
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: mysecretpassword
+      DATABASE_DATABASE: postgres
+      DATABASE_SCHEMA: alpha
+      KAFKA_URL: host.docker.internal
+      KAFKA_PORT: 9093
+
+  beta:
+    image: gabrielhk97/unavanti-beta
+    command: node dist/main
+    ports:
+      - 8889:3002
+    depends_on:
+      - database
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 8890
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: mysecretpassword
+      DATABASE_DATABASE: postgres
+      DATABASE_SCHEMA: beta
+      KAFKA_URL: host.docker.internal
+      KAFKA_PORT: 9093
+  
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9093:9093"
+    environment:
+      - KAFKA_BROKER=0
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://host.docker.internal:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+
