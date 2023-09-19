@@ -20,8 +20,8 @@ Baixe o docker-compose.yml deste repo e rode o seguinte comando:
 docker compose up
 ```
 
-O flutter app está localizado em [localhost:8886](localhost:8886)
-O web app está localizado em [localhost:8887](localhost:8887)
+O flutter app está localizado em [localhost:8886](htt://localhost:8886)
+O web app está localizado em [localhost:8887](http://localhost:8887)
 
 ## Observações
 
