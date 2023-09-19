@@ -14,7 +14,7 @@ docker pull bitnami/zookeeper
 docker pull postgres
 ```
 
-Baixe o docker-compose.yml deste [repo](https://github.com/GabrielHK97/unavanti) e rode o seguinte comando:
+Baixe o docker-compose.yml deste repo e rode o seguinte comando:
 
 ```docker
 docker compose up
